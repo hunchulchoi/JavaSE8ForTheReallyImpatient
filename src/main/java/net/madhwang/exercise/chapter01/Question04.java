@@ -3,9 +3,12 @@ package net.madhwang.exercise.chapter01;
 import java.io.File;
 import java.util.Arrays;
 
+import org.junit.Test;
+
 public class Question04 {
 
-	public static void main(String[] argv) {
+	@Test
+	public void solution() {
 
 		File dirFile = new File("/usr");
 

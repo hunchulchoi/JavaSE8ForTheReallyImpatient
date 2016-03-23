@@ -3,9 +3,12 @@ package net.madhwang.exercise.chapter01;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.junit.Test;
+
 public class Question01 {
 
-	public static void main(String[] argv) {
+	@Test
+	public void solution() {
 		String[] arr = new String[] { "ABC", "GEH", "DEF" };
 
 		Comparator<String> comp = (x, y) -> {
