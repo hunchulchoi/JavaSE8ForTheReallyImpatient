@@ -85,6 +85,7 @@ public class SlotPayoutTest {
 		Calendar now2 = Calendar.getInstance();
 		Date entTime = now2.getTime();
 		System.out.println("endTime =" + entTime.getTime() + "-" + startTime.getTime() + "/ 1000 = " + ((entTime.getTime() - startTime.getTime()) / 1000.0));
+
 		/* 수행 시간 테스트 */
 		System.out.println("===========================");
 		System.out.print("PAY_TABLE_WIN_BITMAP = ");
