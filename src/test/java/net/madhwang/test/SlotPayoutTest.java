@@ -150,7 +150,6 @@ public class SlotPayoutTest {
 			/*
 			 * payTable에 있는 slot idx 에 대한 slotSymbol 값을 가져온다 
 			 * payTable[i] 에 있는 slot index 는 0이 아닌 1부터 시작하기 때문에 1을 빼야한다.
-			 * 
 			 */
 			int slotSymbol = SLOT_RESULT[i][payTable[i] - 1];
 
@@ -160,12 +159,13 @@ public class SlotPayoutTest {
 				/* 이전에 wildSlotCount 가 있으면 현재 또는 처음의 slotSymbol 로 바꾼다 */
 				while (wildSlotCount > 0) {
 					/* 
-					 * 첫 슬롯의 슬롯 심볼이 0 이면, 현재 슬롯 번호로. 0이 아니면 좌측 기준이므로, 첫 슬롯 심볼로 변경 
-					 * 슬롯 pay 기준은 왼쪽 기준이며 따라서 
+					 * 첫 슬롯의 슬롯 심볼이 0 이면, 현재 슬롯 번호로. 0이 아니면 좌측 기준이므로, 첫 슬롯 심볼로 변경.
+					 * 슬롯 pay 기준은 왼쪽 기준이기 때문에,
 					 * 첫번째 슬롯의 결과값이 wild 이면 
 					 * 처음 일반 슬롯이 나올때 이전의 wild 를 바꿔줘야 하며,
-					 * 첫번째 슬롯의 결과값이 wild가 아니면,
-					 * 왼쪽 기준으로 바꿔준다.
+					 * 첫번째 슬롯의 결과값이 wild가 아니면, 왼쪽 기준으로 바꿔준다.
+					 * 
+					 * 예를 들어 5406 이 나왔을때 왼쪽기준으로 바꾸면 5456, 현재값인 6 기준으로 바꾸면 5466 으로 결과가 바뀌게 된다.
 					 */
 					resultSlot[i - wildSlotCount] = (resultSlot[0] == 0 ? slotSymbol : resultSlot[0]);
 					wildSlotCount--;
@@ -177,28 +177,25 @@ public class SlotPayoutTest {
 					hasWildMuliplySlot = true;
 				}
 
-				/* wild 2x 도 0 으로 넣는다 */
-				resultSlot[i] = (resultSlot[0] == 0 ? slotSymbol : resultSlot[0]);
-
-				//resultSlot[0]이면 wildSlotCount 증가 아니면 증가시키지 않음
-
-				if (resultSlot[0] == 0) {
+				if (resultSlot[0] == 0) { /* 처음부터 0 또는 -1 이 나온 경우 */
+					/* wild 2x 도 0 으로 넣는다 */
+					resultSlot[i] = WILD_SLOT_IDX;
 					wildSlotCount++;
+				} else { //슬롯의 지급기준은 가장 왼쪽이기 때문에  resultSlot[0]를 대입 */
+					resultSlot[i] = resultSlot[0];
 				}
+
 			}
 
 			/* 
 			 * 일단 세개는 맞아야 하므로 여기서 체크한다 
-			 * 
-			 * 슬롯 5개 기준 으로 i>2 , i==2 순으로 비교하면 8회, i==2 , i>2 순으로 비교하면 9회를 비교해야 한다.
-			 * 5개를 초과하면 i>2가 더 적게 비교한다.
-			 * 
+			 * 슬롯의 개수가 증가하면 i>2인 경우가 많으므로 i>2부터 체크한다. 
 			 */
 			if (i > 2) {
 
 				/*
 				 * equalSlotCount 나 straight7SlotCount 는 현재 for 루프 인덱스인 i와 일치해야 한다.
-				 * 그래야 두 값의 연속성이 보장된다.
+				 * 그래야 연속된 것인지, 단순히 일치하는 횟수인지 구분가능하다.
 				 */
 				if (equalSlotCount == i && resultSlot[i] == resultSlot[0]) {
 					equalSlotCount++;
@@ -207,7 +204,10 @@ public class SlotPayoutTest {
 				if (straight7SlotCount == i && resultSlot[i] <= LAST_STRAIGHT7_SLOT_IDX) {
 					straight7SlotCount++;
 
-					/* straight7SlotCount 가 증가하지 않았다면 여기서 끝 */
+					/* 
+					 * straight7SlotCount 가 증가하지 않았다면 여기서 끝. 
+					 * equal 패턴은 straight7 패턴의 일부분이기 때문에 straight7 패턴이 맞지 않으면 equal 패턴도 끝이다.
+					 */
 					if (straight7SlotCount == i) {
 						break;
 					}
