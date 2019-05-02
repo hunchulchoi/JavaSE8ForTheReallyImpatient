@@ -10,9 +10,14 @@ public class Question02 {
 	@Test
 	public void solution() {
 		File dirFile = new File(".");
-		Arrays.asList(dirFile.listFiles(d -> d.isDirectory())).forEach(System.out::println);
-		System.out.println("==============================");
-		Arrays.asList(dirFile.listFiles(File::isDirectory)).forEach(System.out::println);
-
+		
+		printDirectory(dirFile);
 	}
+	
+	void printDirectory(File file) {
+
+		System.out.println(file.getPath());
+
+		Arrays.asList(file.listFiles(File::isDirectory)).forEach(f->printDirectory(f));
+	    }
 }
